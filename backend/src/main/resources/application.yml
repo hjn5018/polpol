@@ -1,7 +1,7 @@
 spring:
   application:
     name: backend
-  
+
   datasource:
     url: jdbc:mysql://localhost:3306/polpol_db?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=UTF8
     username: root
@@ -17,5 +17,20 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:test@example.com}
+    password: ${MAIL_PASSWORD:testpassword}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 server:
   port: 8080
+
+jwt:
+  secret: aVeryStrongSecretKeyForJwtAuthenticationThatIsAtLeast32BytesLong123!@#

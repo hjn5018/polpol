@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { useAuthStore } from '../store/authStore';
+import { useUIStore } from '../store/uiStore';
+import { Globe, Moon, Sun, ChevronDown } from 'lucide-react';
 
 export default function LoginPage() {
   const [studentId, setStudentId] = useState('');
@@ -10,6 +12,35 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const setToken = useAuthStore((state) => state.setToken);
+  const { language, setLanguage, isDarkMode, toggleDarkMode } = useUIStore();
+  const [showLanguage, setShowLanguage] = useState(false);
+
+  const translations = {
+    en: {
+      welcome: 'Welcome Back',
+      studentId: 'Student ID',
+      password: 'Password',
+      login: 'LOG IN',
+      loggingIn: 'Logging in...',
+      noAccount: "Don't have an account?",
+      signup: 'Sign up',
+      loginFailed: 'Login failed.',
+      placeholderId: 'e.g. 2502801801'
+    },
+    ko: {
+      welcome: '환영합니다',
+      studentId: '학번',
+      password: '비밀번호',
+      login: '로그인',
+      loggingIn: '로그인 중...',
+      noAccount: '계정이 없으신가요?',
+      signup: '회원가입',
+      loginFailed: '로그인에 실패했습니다.',
+      placeholderId: '예: 2502801801'
+    }
+  };
+
+  const t = translations[language];
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,26 +53,71 @@ export default function LoginPage() {
       });
       setToken(response.data.accessToken);
       console.log('Login successful');
-      navigate('/recruitment');
+      navigate('/main');
     } catch (err: any) {
-      setError(err.response?.data || '로그인에 실패했습니다.');
+      setError(err.response?.data || t.loginFailed);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0F1015] p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--background)] p-4 relative overflow-hidden">
+      {/* Settings Bar */}
+      <div className="absolute top-6 right-8 z-50 flex items-center gap-4">
+        <div className="relative">
+          <button 
+            onClick={() => setShowLanguage(!showLanguage)}
+            className="flex items-center gap-2 p-2 rounded-xl text-[var(--text-primary)] hover:bg-[var(--card-border)]/50 transition-colors group"
+          >
+            <Globe size={18} className="group-hover:text-cyan-400 transition-colors" />
+            <span className="text-xs font-bold uppercase tracking-wider hidden md:block">
+              {language === 'en' ? 'English' : '한국어'}
+            </span>
+            <ChevronDown size={12} className={`transition-transform duration-200 ${showLanguage ? 'rotate-180' : ''}`} />
+          </button>
+
+          {showLanguage && (
+            <div className="absolute top-full right-0 mt-2 w-40 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl shadow-2xl overflow-hidden py-1">
+              <button
+                onClick={() => { setLanguage('en'); setShowLanguage(false); }}
+                className={`w-full px-4 py-2 text-left text-xs font-bold hover:bg-white/5 transition-colors ${language === 'en' ? 'text-cyan-400' : 'text-[var(--text-primary)]'}`}
+              >
+                English
+              </button>
+              <button
+                onClick={() => { setLanguage('ko'); setShowLanguage(false); }}
+                className={`w-full px-4 py-2 text-left text-xs font-bold hover:bg-white/5 transition-colors ${language === 'ko' ? 'text-cyan-400' : 'text-[var(--text-primary)]'}`}
+              >
+                한국어
+              </button>
+            </div>
+          )}
+        </div>
+
+        <button
+          onClick={toggleDarkMode}
+          className="p-2 rounded-xl text-[var(--text-primary)] hover:bg-[var(--card-border)]/50 transition-colors group"
+          title={isDarkMode ? (language === 'en' ? 'Switch to Light Mode' : '라이트 모드로 전환') : (language === 'en' ? 'Switch to Dark Mode' : '다크 모드로 전환')}
+        >
+          {isDarkMode ? (
+            <Sun size={18} className="group-hover:text-yellow-400 transition-colors" />
+          ) : (
+            <Moon size={18} className="group-hover:text-indigo-400 transition-colors" />
+          )}
+        </button>
+      </div>
+
       {/* Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-      <div className="bg-[#1c1d24] p-8 sm:p-10 rounded-2xl shadow-2xl w-full max-w-md border border-[#2a2b36] z-10 relative">
+      <div className="bg-[var(--card-bg)] backdrop-blur-xl p-8 sm:p-10 rounded-2xl shadow-2xl w-full max-w-md border border-[var(--card-border)] z-10 relative">
         <div className="text-center mb-10">
-          <Link to="/" className="flex justify-center items-center gap-2 mb-4">
-             <div className="w-8 h-8 rounded-md bg-gradient-to-br from-cyan-400 to-blue-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]"></div>
-             <span className="text-2xl font-bold tracking-wider text-white">POL.GG</span>
+          <Link to="/" className="flex flex-col items-center gap-4 mb-4">
+             <img src="/polpol_logo_blue_devil.svg" alt="Polpol Logo" className="w-16 h-16" />
+             <span className="text-3xl font-black tracking-wider text-[#0047AB]">POLPOL</span>
           </Link>
-          <h2 className="text-2xl font-bold text-gray-200">Welcome Back</h2>
+          <h2 className="text-xl font-bold text-[var(--text-secondary)]">{t.welcome}</h2>
         </div>
         
         {error && (
@@ -52,23 +128,23 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-sm font-semibold text-gray-400 mb-2">Student ID (학번)</label>
+            <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-2">{t.studentId}</label>
             <input 
               type="text" 
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
-              className="w-full px-4 py-3.5 rounded-xl border border-[#2a2b36] focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none bg-[#13141a] text-gray-200 placeholder-gray-600 shadow-inner"
-              placeholder="e.g. 20240001"
+              className="w-full px-4 py-3.5 rounded-xl border border-[var(--card-border)] focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none bg-[var(--input-bg)] text-[var(--text-primary)] placeholder-gray-600 shadow-inner"
+              placeholder={t.placeholderId}
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-400 mb-2">Password</label>
+            <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-2">{t.password}</label>
             <input 
               type="password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3.5 rounded-xl border border-[#2a2b36] focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none bg-[#13141a] text-gray-200 placeholder-gray-600 shadow-inner"
+              className="w-full px-4 py-3.5 rounded-xl border border-[var(--card-border)] focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none bg-[var(--input-bg)] text-[var(--text-primary)] placeholder-gray-600 shadow-inner"
               placeholder="••••••••"
               required
             />
@@ -78,13 +154,13 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full py-4 mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)] hover:shadow-[0_0_25px_rgba(6,182,212,0.4)] disabled:opacity-70 flex justify-center items-center"
           >
-            {loading ? '로그인 중...' : 'LOG IN'}
+            {loading ? t.loggingIn : t.login}
           </button>
         </form>
-        <div className="mt-8 text-center text-sm text-gray-500">
-          계정이 없으신가요? 
-          <Link to="/signup" className="ml-2 text-cyan-400 font-bold hover:text-cyan-300 transition-colors">
-            회원가입
+        <div className="mt-8 text-center text-sm text-[var(--text-secondary)]">
+          {t.noAccount}
+          <Link to="/signup" className="ml-2 text-cyan-500 font-bold hover:text-cyan-400 transition-colors">
+            {t.signup}
           </Link>
         </div>
       </div>

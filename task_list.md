@@ -16,35 +16,59 @@
 - [x] 프론트엔드 인트로 및 로그인 월(Login-wall) 페이지 개발, 이메일 인증 UI 적용.
 - [x] 사용자 세션 관리를 포함한 헤더(Header) 및 사이드 내비게이션 바 개발.
 
-## Phase 3: 커리어 & 포트폴리오 (Career & Portfolio - 핵심 서비스 1)
-- [ ] 포트폴리오 엔티티 구성 및 CRUD API 개발 (파일 업로드 AWS S3 연동 포함).
-- [x] 프론트엔드 "마이페이지" 대시보드 UI 개발.
-- [ ] 포트폴리오 에디터 폼 UI 구현 (프로젝트, 보유 기술, 경력, 자격증 등).
+## Phase 3: 이력서(Resume) 중심 데이터 시스템 (핵심 서비스 1)
+- [x] 포트폴리오(Portfolio) 및 프로젝트(Project) 엔티티 구성 및 CRUD API 개발.
+- [x] 프론트엔드 "마이페이지(대시보드)" 초기 UI 개발.
 - [x] 기업 지원 현황(Job Application) 엔티티 및 CRUD API 구현.
-- [x] 검색 및 필터링 기능이 포함된 "지원 현황 관리(트래커)" 프론트엔드 UI 개발.
+- [x] 검색 및 필터링 기능이 포함된 "지원 현황 관리(트래커)" UI 개발.
+- [x] **[NEW] 이력서(Resume) 시스템 구축**
+  - [x] `Resume` 엔티티 설계 (기술, 경력, 소개글 포함) 및 CRUD API 개발.
+  - [x] 활성화된 이력서 조회를 위한 엔드포인트 구현.
+  - [x] `Project` 엔티티와 `Resume` 간의 연관 관계 매핑 최적화.
+- [ ] **[MODIFY] 마이페이지 고도화 및 데이터 연동**
+  - [x] 마이페이지 레이아웃 개편 (디자인 시안 반영) [src/pages/DashboardPage.tsx]
+  - [x] 이력서 데이터 기반으로 Skills, Career, Projects 섹션 자동 렌더링.
+  - [x] 개인정보(이메일, 학번) 마이페이지 메인뷰에서 제거.
+  - [x] 이력서 수정/삭제/기본 설정 기능 구현.
+  - [x] 4열 레이아웃 최적화 및 콤팩트 디자인 적용.
 
-## Phase 4: 소셜 및 커뮤니티 피드 (Social & Community Feed - 핵심 서비스 2)
+## Phase 4: 마이페이지 및 사이드바 구조 고도화 (Restructuring)
+- [x] **[MODIFY] 사이드바 레이아웃 개편** [src/components/Sidebar.tsx]
+  - [x] My Portfolio, Account, Settings, Help 4대 메뉴 구성.
+  - [x] 각 메뉴별 아이콘 및 경로 매핑.
+- [x] **[MODIFY] My Portfolio (대시보드) 재구성** [src/pages/DashboardPage.tsx]
+  - [x] Profile, About 섹션 제거 (Account로 이동).
+  - [x] 섹션 명칭 변경:
+    - [x] `experience` -> `work experience`
+    - [x] `Top Projects` -> `Projects`
+    - [x] `My Resumes` -> `Resumes`
+  - [x] `Job Application Tracking` 섹션 추가 및 데이터 연동.
+  - [x] 섹션 순서 조정 (Job Application, Resumes, Projects, Skills, Work Experience).
+- [x] **[NEW/MODIFY] Account 시스템 구현**
+  - [x] 이름 및 비밀번호 변경 기능 추가.
+  - [x] 기존 Profile 정보를 이 페이지로 통합.
+- [x] **[NEW/MODIFY] Settings & Help 페이지 최적화**
+  - [x] 알림, 테마 등 일반 설정 항목 구성.
+  - [x] FAQ, 고객 센터 등 도움말 항목 구성.
+
+## Phase 5: 소셜 및 커뮤니티 피드 (Social & Community Feed - 핵심 서비스 2)
 - [x] HackerNews 디자인 패턴을 차용한 메인 페이지 "기업 지원 현황 공유 피드" API 구현.
 - [x] 기업 지원 현황 목록을 노출할 메인 페이지 통합 UI 개발.
 - [ ] 학과 맞춤형 자격증 안내/공유 게시판 API 및 프론트엔드 페이지 개발.
 - [ ] 자유게시판(일반 소통) 및 학기별 커리큘럼/시간표 조회 기능(API/프론트엔드) 개발.
 
-## Phase 5: polbook - 중고 거래 직거래 플랫폼 (Second-hand Market - 핵심 서비스 3)
-- [ ] 거래 물품(Market Item) 엔티티 및 API 개발 (업로드/수정/상태변경 등, 책 사진 업로드 S3 연동).
-- [ ] polbook 전용 페이지 리스트 UI 개발 (검색 및 카테고리/강의 필터 적용).
-- [ ] 중고 서적 등록 및 물품 상세정보 UI 개발.
-- [ ] 에스크로 안전결제 기반(Transaction) 시스템 API 구현 (가상의 포인트 충전 또는 포트원 등 테스트 결제망 도입 고려).
-- [ ] WebSockets / STOMP를 활용한 1:1 실시간 채팅 기능 백엔드/웹 구현.
-- [ ] 거래완료 후 매너 온도(별점) 평가 시스템 구축 및 프로필 노출 시스템 개발.
+## Phase 6: polbook - 중고 거래 직거래 플랫폼 (Second-hand Market - 핵심 서비스 3)
+- [ ] 거래 물품(Market Item) 엔티티 및 API 개발.
+- [ ] polbook 전용 페이지 리스트 UI 개발.
+- [ ] WebSockets / STOMP를 활용한 1:1 실시간 채팅 기능 구현.
+- [ ] 거래완료 후 매너 온도(별점) 평가 시스템 구축.
 
-## Phase 6: 관리자 및 인공지능 스마트 서비스 (Admin & Smart Services)
-- [ ] 학생회 소통 페이지 전용 게시물(공지사항, 설문조사, FAQ) 시스템 구축.
-- [ ] 불량 유저 등 신고 내용을 접수하고 정지 처리할 수 있는 권한 관리(Admin Dashboard) 페이지 개발.
-- [ ] 인공지능 LLM 모델 프로토타입 연결 (학점, 자격증, 시간표 등을 물어보는 Q&A 챗봇 모듈화).
-- [ ] 유튜브 직무/취업/면접 명언 및 정보성 영상을 메인 페이지 하단에 제공하는 큐레이션 영역 추가.
+## Phase 7: 관리자 및 인공지능 스마트 서비스
+- [ ] 학생회 소통 페이지 전용 게시물 시스템 구축.
+- [ ] 관리자 대시보드(권한 관리, 신고 처리) 개발.
+- [ ] 인공지능 LLM 기반 Q&A 챗봇 모듈화 및 연결.
 
-## Phase 7: 폴리싱 및 배포 (Polish & Deployment)
-- [ ] 핵심 서비스 로직에 대한 미완성 단위/통합 테스트 코드 추가 및 최종 점검.
-- [ ] 디바이스 호환성(모바일/데스크탑 등) 및 UI를 검증하는 E2E(전구간 수동) 테스트 수행.
-- [ ] GitHub Actions를 통한 CI/CD 통합 및 무중단 배포 스크립트 작성.
-- [ ] AWS (RDS, EC2, S3) 및 Vercel 환경을 바탕으로 프로덕션용 최종 인프라 배포.
+## Phase 8: 폴리싱 및 배포 (Polish & Deployment)
+- [x] Spring Boot DevTools 설정.
+- [ ] 핵심 서비스 로직 단위/통합 테스트 코드 추가.
+- [ ] GitHub Actions CI/CD 구축 및 클라우드 배포.
