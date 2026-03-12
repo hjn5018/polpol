@@ -1,0 +1,10 @@
+<svg width="100" height="100" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .text { font: bold 45px sans-serif; fill: #0047AB; }
+    .wing { fill: none; stroke: #0047AB; stroke-width: 5; stroke-linecap: round; }
+  </style>
+  <path class="wing" d="M40,80 Q10,70 20,110 Q35,100 45,105" />
+  <path class="wing" d="M160,80 Q190,70 180,110 Q165,100 155,105" />
+  <text x="100" y="90" text-anchor="middle" class="text">POL</text>
+  <text x="100" y="140" text-anchor="middle" class="text">POL</text>
+</svg>
