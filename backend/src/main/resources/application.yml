@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: backend
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/polpol_db?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=UTF8
+    username: root
+    password: password # TODO: Change this to environment variable or actual local DB password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update # Automatically creates/updates tables based on entity classes
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+server:
+  port: 8080

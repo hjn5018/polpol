@@ -3,11 +3,11 @@
 이 문서는 **polpol** 프로젝트 개발을 위한 작업 목록으로, 우선 순위에 따라 나열되어 있습니다. 깃허브 프로젝트, Jira 이슈 등을 생성할 때 활용됩니다.
 
 ## Phase 1: 기반 설정 및 프로젝트 초기화 (Foundation)
-- [ ] Spring Boot 백엔드 초기화 설정 (Java 17+, Spring Web, Security, JPA, MySQL 드라이버).
-- [ ] React 프론트엔드 초기화 세팅 (Vite, TypeScript, Tailwind CSS 또는 Vanilla CSS, React Router).
-- [ ] 데이터베이스 스키마 설계 및 테이블 생성, 백엔드와 DB 연결.
-- [ ] 프론트엔드 ESLint/Prettier 포매터 구성.
-- [ ] 기초 API 경로(Path) 및 전역 예외 처리(Error Handling) 세팅.
+- [x] Spring Boot 백엔드 초기화 설정 (Java 17+, Spring Web, Security, JPA, MySQL 드라이버).
+- [x] React 프론트엔드 초기화 세팅 (Vite, TypeScript, Tailwind CSS 또는 Vanilla CSS, React Router).
+- [x] 데이터베이스 스키마 설계 및 테이블 생성, 백엔드와 DB 연결.
+- [x] 프론트엔드 ESLint/Prettier 포매터 구성.
+- [x] 기초 API 경로(Path) 및 전역 예외 처리(Error Handling) 세팅.
 
 ## Phase 2: 인증 및 유저 관리 (Authentication & User Details)
 - [ ] 유저(User) 엔티티 및 Spring Security 기반 JWT 인증 시스템 구현.
