@@ -93,7 +93,8 @@ export default function SignupPage() {
     try {
       setLoading(true);
       setEmailError('');
-      await axios.post('http://localhost:8080/api/auth/send-verification', { email });
+      const fullEmail = `${email}@office.kopo.ac.kr`;
+      await axios.post('http://localhost:8080/api/auth/send-verification', { email: fullEmail });
       setEmailSent(true);
       alert(t.codeSent);
     } catch (err: any) {
@@ -108,9 +109,14 @@ export default function SignupPage() {
     try {
       setLoading(true);
       setEmailError('');
-      await axios.post('http://localhost:8080/api/auth/verify-code', { email, code: verificationCode });
+      const fullEmail = `${email}@office.kopo.ac.kr`;
+      await axios.post('http://localhost:8080/api/auth/verify-code', { email: fullEmail, code: verificationCode });
       setEmailVerified(true);
-      alert(t.signupSuccess.split('.')[0]); // Simple completion alert
+      
+      // ID를 학번으로 자동 설정
+      setStudentId(email);
+      
+      alert(language === 'ko' ? '인증되었습니다.' : 'Verified successfully.');
       setStep(3);
     } catch (err: any) {
       setEmailError(err.response?.data || t.codeError);
@@ -126,8 +132,9 @@ export default function SignupPage() {
     try {
       setLoading(true);
       setSignupError('');
+      const fullEmail = `${email}@office.kopo.ac.kr`;
       await axios.post('http://localhost:8080/api/auth/signup', {
-        studentId, email, password, name
+        studentId, email: fullEmail, password, name
       });
       alert(t.signupSuccess);
       navigate('/login');
@@ -240,25 +247,32 @@ export default function SignupPage() {
             
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t.schoolEmail}</label>
-              <div className="flex gap-2">
-                <input 
-                  type="email" 
-                  value={email}
-                  disabled={emailSent || loading}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 px-4 py-3.5 rounded-xl border border-[var(--card-border)] focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition bg-[var(--input-bg)] text-[var(--text-primary)] placeholder-gray-600 shadow-inner disabled:opacity-50"
-                  placeholder="id@office.kopo.ac.kr"
-                />
+              <div className="flex flex-col gap-3">
+                <div className="space-y-1.5">
+                  <input 
+                    type="text" 
+                    value={email}
+                    disabled={emailSent || loading}
+                    onChange={(e) => setEmail(e.target.value.split('@')[0])}
+                    className={`w-full px-4 py-4 bg-[var(--input-bg)] rounded-xl border border-[var(--card-border)] focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition text-[var(--text-primary)] font-bold text-lg placeholder-gray-600 shadow-inner ${emailSent || loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    placeholder={language === 'ko' ? '학번 (ID) 입력' : 'Student ID'}
+                  />
+                  <div className="flex justify-end pr-2">
+                    <span className="text-xs font-bold text-cyan-500/80 animate-pulse-slow">
+                      @office.kopo.ac.kr
+                    </span>
+                  </div>
+                </div>
                 {!emailSent ? (
                   <button 
                     onClick={handleSendCode}
-                    disabled={!email || !email.includes('@office.kopo.ac.kr') || loading}
-                    className="px-5 py-3.5 bg-[var(--sidebar-bg)] text-cyan-400 rounded-xl font-bold hover:bg-[var(--card-border)] transition whitespace-nowrap border border-[var(--card-border)] disabled:opacity-50 disabled:text-gray-500"
+                    disabled={!email || loading}
+                    className="w-full py-4 mt-1 bg-gradient-to-r from-cyan-600/20 to-blue-600/20 text-cyan-400 rounded-xl font-bold hover:bg-cyan-500/10 transition border border-cyan-500/30 disabled:opacity-50"
                   >
                     {t.send}
                   </button>
                 ) : (
-                  <button onClick={() => setEmailSent(false)} disabled={loading} className="px-5 py-3.5 bg-[var(--sidebar-bg)] border border-[var(--card-border)] text-gray-400 rounded-xl font-bold hover:bg-[var(--card-border)] transition whitespace-nowrap disabled:opacity-50">{t.reset}</button>
+                  <button onClick={() => setEmailSent(false)} disabled={loading} className="w-full py-4 mt-1 bg-[var(--sidebar-bg)] border border-[var(--card-border)] text-gray-400 rounded-xl font-bold hover:bg-[var(--card-border)] transition disabled:opacity-50">{t.reset}</button>
                 )}
               </div>
             </div>
@@ -266,20 +280,20 @@ export default function SignupPage() {
             {emailSent && (
               <div className="animate-fade-in pt-2">
                 <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t.verificationCode}</label>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-3">
                   <input 
                     type="text" 
                     value={verificationCode}
                     disabled={loading}
                     onChange={(e) => setVerificationCode(e.target.value)}
-                    className="flex-1 px-4 py-3.5 rounded-xl border border-[var(--card-border)] focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition bg-[var(--input-bg)] text-[var(--text-primary)] placeholder-gray-600 shadow-inner text-center font-mono tracking-[0.5em] text-lg disabled:opacity-50"
+                    className="w-full px-4 py-4 rounded-xl border border-[var(--card-border)] focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition bg-[var(--input-bg)] text-[var(--text-primary)] placeholder-gray-600 shadow-inner text-center font-mono tracking-[0.8em] text-2xl disabled:opacity-50"
                     maxLength={6}
                     placeholder="000000"
                   />
                   <button 
                     onClick={handleVerifyCode}
                     disabled={verificationCode.length !== 6 || loading}
-                    className="px-6 py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold hover:from-cyan-400 hover:to-blue-500 transition shadow-[0_0_15px_rgba(6,182,212,0.3)] disabled:opacity-50 disabled:shadow-none"
+                    className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold hover:from-cyan-400 hover:to-blue-500 transition shadow-[0_0_15px_rgba(6,182,212,0.3)] disabled:opacity-50 disabled:shadow-none"
                   >
                     {t.verify}
                   </button>
@@ -307,18 +321,7 @@ export default function SignupPage() {
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t.studentId}</label>
-              <input 
-                type="text" 
-                value={studentId}
-                disabled={loading}
-                onChange={(e) => setStudentId(e.target.value)}
-                className="w-full px-4 py-3.5 rounded-xl border border-[var(--card-border)] focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition bg-[var(--input-bg)] text-[var(--text-primary)] placeholder-gray-600 shadow-inner disabled:opacity-50"
-                placeholder={t.idPlaceholder}
-                required
-              />
-            </div>
+
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">{t.password}</label>
               <input 

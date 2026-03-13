@@ -5,41 +5,41 @@
   :root {
     --background: #090a0f;
     --foreground: #e2e8f0;
-    --card-bg: rgba(15, 16, 22, 0.4);
-    --card-inner-bg: #1c1d24;
-    --card-border: #1f2028;
+    --card-bg: #090a0f;
+    --card-inner-bg: #090a0f;
+    --card-border: rgba(255, 255, 255, 0.05);
     --text-primary: #ffffff;
-    --text-secondary: #94a3b8;
-    --sidebar-bg: #0F1015;
-    --sidebar-text: #94a3b8;
+    --text-secondary: #6b7280;
+    --sidebar-bg: #090a0f;
+    --sidebar-text: #6b7280;
     --sidebar-text-active: #ffffff;
-    --header-bg: rgba(19, 20, 26, 0.8);
-    --bg-subtle: #1c1d24;
+    --header-bg: rgba(9, 10, 15, 0.95);
+    --bg-subtle: rgba(255, 255, 255, 0.02);
     --button-bg: #1c1d24;
     --button-border: #2a2b36;
     --input-bg: #0f1016;
   }
 
   .light-theme {
-    --background: #f8f9fa;
-    --foreground: #16191f;
+    --background: #ffffff;
+    --foreground: #111827;
     --card-bg: #ffffff;
     --card-inner-bg: #ffffff;
-    --card-border: #eaeded;
-    --text-primary: #16191f;
-    --text-secondary: #545b64;
-    --sidebar-bg: #ffffff;
-    --sidebar-text: #545b64;
-    --sidebar-text-active: #16191f;
+    --card-border: rgba(0, 0, 0, 0.08);
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --sidebar-bg: #f9fafb;
+    --sidebar-text: #6b7280;
+    --sidebar-text-active: #111827;
     --header-bg: #232f3e;
     --header-text: #ffffff;
-    --bg-subtle: #f2f3f3;
+    --bg-subtle: rgba(0, 0, 0, 0.03);
     --button-bg: #ffffff;
-    --button-border: #879596;
+    --button-border: #e5e7eb;
     --input-bg: #ffffff;
-    --accent-primary: #0073bb;
-    --accent-blue: #0073bb;
-    --accent-orange: #ff9900;
+    --accent-primary: #0ea5e9;
+    --accent-blue: #0ea5e9;
+    --accent-orange: #f97316;
   }
 
   body {
@@ -82,4 +82,3 @@
 .animate-fade-in {
   animation: fadeIn 0.4s ease-out forwards;
 }
-

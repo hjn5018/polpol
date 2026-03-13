@@ -1,10 +1,10 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Library, UserCircle, LayoutDashboard, Settings, Briefcase, Home, Users, ShoppingBag, MessageSquare } from 'lucide-react';
+import { Library, UserCircle, LayoutDashboard, Settings, Briefcase, Home, Users, ShoppingBag, MessageSquare, Menu } from 'lucide-react';
 import { useUIStore } from '../store/uiStore';
 
 export default function Sidebar() {
   const location = useLocation();
-  const { language, isSidebarCollapsed } = useUIStore();
+  const { language, isSidebarCollapsed, toggleSidebar } = useUIStore();
 
   const translations = {
     en: {
@@ -64,10 +64,29 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className={`${isSidebarCollapsed ? 'w-0' : 'w-64'} bg-[var(--sidebar-bg)] flex flex-col h-full shrink-0 hidden md:flex transition-all duration-300 ease-in-out relative overflow-hidden z-30`}>
+    <aside className={`${isSidebarCollapsed ? 'w-0' : 'w-64'} bg-[var(--sidebar-bg)] flex flex-col h-full shrink-0 hidden md:flex transition-all duration-300 ease-in-out relative overflow-hidden z-30 border-r border-[var(--card-border)]`}>
+      
+      {/* Branding inside Sidebar - Matches TopHeader Height & Color */}
+      <div className="h-16 flex items-center px-4 border-b border-[var(--card-border)] shrink-0 bg-[var(--header-bg)]">
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={toggleSidebar}
+            className="p-1 hover:bg-white/10 rounded-lg transition-colors text-[var(--header-text)] opacity-80 hover:opacity-100"
+          >
+            <Menu size={20} />
+          </button>
+
+          <NavLink to="/main" className="flex items-center gap-3 group">
+            <div className="w-8 h-8 flex items-center justify-center transition-transform group-hover:scale-105">
+              <img src="/polpol_logo_blue_devil.svg" alt="" className="w-7 h-7" />
+            </div>
+            <span className="text-xl font-black tracking-tighter text-[var(--header-text)]">POLPOL</span>
+          </NavLink>
+        </div>
+      </div>
 
       {/* Navigation */}
-      <nav className={`flex-1 ${isSidebarCollapsed ? 'px-2' : 'px-4'} py-6 space-y-2`}>
+      <nav className="flex-1 px-4 py-6 space-y-1">
         {!isMyPage ? (
           mainNavItems.map((item) => {
             const Icon = item.icon;
@@ -76,16 +95,15 @@ export default function Sidebar() {
                 key={item.name}
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3 px-4'} py-3 rounded-xl transition-all duration-200 group ${
+                  `flex items-center gap-4 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? 'bg-[var(--card-inner-bg)] text-[var(--sidebar-text-active)] relative before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:bg-[var(--accent-primary)] before:rounded-r-md'
-                      : 'text-[var(--sidebar-text)] hover:text-[var(--sidebar-text-active)] hover:bg-[var(--card-inner-bg)]'
+                      ? 'bg-[var(--bg-subtle)] text-[var(--sidebar-text-active)] shadow-sm'
+                      : 'text-[var(--sidebar-text)] hover:text-[var(--sidebar-text-active)] hover:bg-[var(--bg-subtle)]'
                   }`
                 }
-                title={isSidebarCollapsed ? item.name : ''}
               >
-                <Icon size={20} className="stroke-[1.5]" />
-                {!isSidebarCollapsed && <span className="font-medium text-sm truncate">{item.name}</span>}
+                <Icon size={18} className="stroke-[1.5]" />
+                <span className="font-bold text-[13px] tracking-tight truncate">{item.name}</span>
               </NavLink>
             );
           })
@@ -98,16 +116,15 @@ export default function Sidebar() {
                   key={item.name}
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3 px-4'} py-3 rounded-xl transition-all duration-200 group ${
+                    `flex items-center gap-4 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
                       isActive
-                        ? 'bg-[var(--card-inner-bg)] text-[var(--accent-primary)] relative'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-inner-bg)]'
+                        ? 'bg-[var(--bg-subtle)] text-[var(--sidebar-text-active)] shadow-sm'
+                        : 'text-[var(--sidebar-text)] hover:text-[var(--sidebar-text-active)] hover:bg-[var(--bg-subtle)]'
                     }`
                   }
-                  title={isSidebarCollapsed ? item.name : ''}
                 >
-                  <Icon size={20} className="stroke-[1.5]" />
-                  {!isSidebarCollapsed && <span className="font-medium text-sm truncate">{item.name}</span>}
+                  <Icon size={18} className="stroke-[1.5]" />
+                  <span className="font-bold text-[13px] tracking-tight truncate">{item.name}</span>
                 </NavLink>
               );
             })}
@@ -117,4 +134,3 @@ export default function Sidebar() {
     </aside>
   );
 }
-
