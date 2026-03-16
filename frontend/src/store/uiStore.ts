@@ -15,7 +15,7 @@ export const useUIStore = create<UIState>((set) => ({
     localStorage.setItem('language', lang);
     set({ language: lang });
   },
-  isDarkMode: localStorage.getItem('theme') === 'dark',
+  isDarkMode: localStorage.getItem('theme') !== 'light', // Default to dark mode (true) if null or 'dark'
   toggleDarkMode: () => {
     set((state) => {
       const newMode = !state.isDarkMode;
@@ -28,7 +28,7 @@ export const useUIStore = create<UIState>((set) => ({
       return { isDarkMode: newMode };
     });
   },
-  isSidebarCollapsed: localStorage.getItem('sidebarCollapsed') !== 'false', // Default to true if not explicitly set to false
+  isSidebarCollapsed: localStorage.getItem('sidebarCollapsed') !== 'false', // Default to true if not set
   toggleSidebar: () => {
     set((state) => {
       const newState = !state.isSidebarCollapsed;

@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Library, UserCircle, LayoutDashboard, Settings, Briefcase, Home, Users, ShoppingBag, MessageSquare, Menu } from 'lucide-react';
+import { Library, UserCircle, LayoutDashboard, Settings, Briefcase, Home, Users, ShoppingBag, MessageSquare, Menu, HelpCircle } from 'lucide-react';
 import { useUIStore } from '../store/uiStore';
 
 export default function Sidebar() {
@@ -9,9 +9,9 @@ export default function Sidebar() {
   const translations = {
     en: {
       mainPage: 'Main Page',
-      recruitment: 'Recruitment',
+      recruitment: 'Job Applications',
       community: 'Community',
-      trade: 'Trade',
+      trade: 'Flea Market',
       studentCouncil: 'Council',
       dashboard: 'Dashboard',
       portfolio: 'Portfolio',
@@ -20,13 +20,15 @@ export default function Sidebar() {
       account: 'Account',
       settings: 'Settings',
       help: 'Help',
+      faq: 'FAQ',
+      helpCenter: 'Help Center',
     },
     ko: {
       mainPage: '메인 페이지',
-      recruitment: '채용 공고',
+      recruitment: '지원 현황',
       community: '커뮤니티',
       trade: '중고거래',
-      studentCouncil: '학생회 소통',
+      studentCouncil: '학생회 창구',
       dashboard: '대시보드',
       portfolio: '포트폴리오',
       jobApplications: '지원 현황',
@@ -34,6 +36,8 @@ export default function Sidebar() {
       account: '계정 설정',
       settings: '환경 설정',
       help: '도움말',
+      faq: '자주 묻는 질문',
+      helpCenter: '도움말 센터',
     }
   };
 
@@ -45,29 +49,30 @@ export default function Sidebar() {
                    location.pathname.startsWith('/applications') ||
                    location.pathname.startsWith('/account') ||
                    location.pathname.startsWith('/settings') ||
-                   location.pathname.startsWith('/help');
+                   location.pathname.startsWith('/help') ||
+                   location.pathname.startsWith('/faq');
 
   const mainNavItems = [
-    { name: t.mainPage, path: '/main', icon: Home },
-    { name: t.recruitment, path: '/recruitment', icon: Briefcase },
-    { name: t.community, path: '/community', icon: Users },
-    { name: t.trade, path: '/trade', icon: ShoppingBag },
-    { name: t.studentCouncil, path: '/council', icon: MessageSquare },
+    { name: t.mainPage, path: '/main', icon: Home, color: 'text-gray-400', bg: 'bg-gray-500/10' },
+    { name: t.recruitment, path: '/recruitment', icon: Briefcase, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+    { name: t.trade, path: '/trade', icon: ShoppingBag, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { name: t.community, path: '/community', icon: Users, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+    { name: t.studentCouncil, path: '/council', icon: MessageSquare, color: 'text-green-500', bg: 'bg-green-500/10' },
   ];
 
   const myPageItems = [
-    { name: t.dashboard, path: '/dashboard', icon: LayoutDashboard },
-    { name: t.portfolio, path: '/portfolio', icon: Library },
-    { name: t.projects, path: '/projects', icon: LayoutDashboard },
-    { name: t.account, path: '/account', icon: UserCircle },
-    { name: t.settings, path: '/settings', icon: Settings },
+    { name: t.dashboard, path: '/dashboard', icon: LayoutDashboard, color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
+    { name: t.portfolio, path: '/portfolio', icon: Library, color: 'text-pink-500', bg: 'bg-pink-500/10' },
+    { name: t.projects, path: '/projects', icon: LayoutDashboard, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+    { name: t.account, path: '/account', icon: UserCircle, color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
+    { name: t.settings, path: '/settings', icon: Settings, color: 'text-gray-400', bg: 'bg-gray-500/10' },
   ];
 
   return (
-    <aside className={`${isSidebarCollapsed ? 'w-0' : 'w-64'} bg-[var(--sidebar-bg)] flex flex-col h-full shrink-0 hidden md:flex transition-all duration-300 ease-in-out relative overflow-hidden z-30 border-r border-[var(--card-border)]`}>
+    <aside className={`${isSidebarCollapsed ? 'w-0' : 'w-64'} bg-[var(--sidebar-bg)] flex flex-col h-full shrink-0 hidden md:flex transition-all duration-300 ease-in-out relative overflow-hidden z-30`}>
       
       {/* Branding inside Sidebar - Matches TopHeader Height & Color */}
-      <div className="h-16 flex items-center px-4 border-b border-[var(--card-border)] shrink-0 bg-[var(--header-bg)]">
+      <div className="h-16 flex items-center px-4 border-b border-[var(--card-border)] shrink-0 bg-[var(--header-bg)] relative">
         <div className="flex items-center gap-4">
           <button 
             onClick={toggleSidebar}
@@ -86,7 +91,7 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-6 space-y-1">
+      <nav className="flex-1 px-4 py-6 space-y-1 border-r border-[var(--card-border)] overflow-y-auto">
         {!isMyPage ? (
           mainNavItems.map((item) => {
             const Icon = item.icon;
@@ -102,7 +107,9 @@ export default function Sidebar() {
                   }`
                 }
               >
-                <Icon size={18} className="stroke-[1.5]" />
+                <div className={`w-8 h-8 rounded-lg ${item.bg} flex items-center justify-center shrink-0`}>
+                  <Icon size={18} className={`stroke-[1.5] ${item.color} opacity-100 transition-opacity`} />
+                </div>
                 <span className="font-bold text-[13px] tracking-tight truncate">{item.name}</span>
               </NavLink>
             );
@@ -116,14 +123,16 @@ export default function Sidebar() {
                   key={item.name}
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center gap-4 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
+                    `flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group ${
                       isActive
                         ? 'bg-[var(--bg-subtle)] text-[var(--sidebar-text-active)] shadow-sm'
                         : 'text-[var(--sidebar-text)] hover:text-[var(--sidebar-text-active)] hover:bg-[var(--bg-subtle)]'
                     }`
                   }
                 >
-                  <Icon size={18} className="stroke-[1.5]" />
+                  <div className={`w-8 h-8 rounded-lg ${item.bg} flex items-center justify-center shrink-0`}>
+                    <Icon size={18} className={`stroke-[1.5] ${item.color} opacity-100 transition-opacity`} />
+                  </div>
                   <span className="font-bold text-[13px] tracking-tight truncate">{item.name}</span>
                 </NavLink>
               );
@@ -131,6 +140,41 @@ export default function Sidebar() {
           </div>
         )}
       </nav>
+
+      {/* FAQ & Help Section at Bottom */}
+      <div className="px-4 pb-6 space-y-1 border-r border-[var(--card-border)]">
+        <NavLink
+          to="/faq"
+          className={({ isActive }) =>
+            `flex items-center gap-4 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
+              isActive
+                ? 'bg-[var(--bg-subtle)] text-[var(--sidebar-text-active)] shadow-sm'
+                : 'text-[var(--sidebar-text)] hover:text-[var(--sidebar-text-active)] hover:bg-[var(--bg-subtle)]'
+            }`
+          }
+        >
+          <div className="w-8 h-8 rounded-lg bg-gray-500/10 flex items-center justify-center shrink-0">
+            <HelpCircle size={18} className="stroke-[1.5] text-gray-400 opacity-100 transition-opacity" />
+          </div>
+          <span className="font-bold text-[13px] tracking-tight truncate">{t.faq}</span>
+        </NavLink>
+
+        <NavLink
+          to="/help"
+          className={({ isActive }) =>
+            `flex items-center gap-4 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
+              isActive
+                ? 'bg-[var(--bg-subtle)] text-[var(--sidebar-text-active)] shadow-sm'
+                : 'text-[var(--sidebar-text)] hover:text-[var(--sidebar-text-active)] hover:bg-[var(--bg-subtle)]'
+            }`
+          }
+        >
+          <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
+            <MessageSquare size={18} className="stroke-[1.5] text-indigo-500 opacity-100 transition-opacity" />
+          </div>
+          <span className="font-bold text-[13px] tracking-tight truncate">{t.helpCenter}</span>
+        </NavLink>
+      </div>
     </aside>
   );
 }

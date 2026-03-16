@@ -8,13 +8,13 @@ const PlaceholderPage = ({ icon: Icon, titleKey, colorClass }: { icon: any; titl
     en: {
       community: 'Community',
       trade: 'Used Goods Trading',
-      council: 'Student Council Communication',
+      council: 'Student Council Desk',
       comingSoon: 'This feature is coming soon!',
     },
     ko: {
       community: '커뮤니티',
       trade: '중고거래',
-      council: '학생회 소통',
+      council: '학생회 창구',
       comingSoon: '이 기능은 곧 출시될 예정입니다!',
     }
   };

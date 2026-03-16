@@ -16,6 +16,7 @@ import { useAuthStore } from './store/authStore';
 
 import Sidebar from './components/Sidebar';
 import TopHeader from './components/TopHeader';
+import Footer from './components/Footer';
 import axios from 'axios';
 import { useEffect } from 'react';
 
@@ -55,9 +56,10 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <TopHeader />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto w-full p-4 sm:p-8 lg:p-10 hide-scrollbar scroll-smooth">
-          <div className="max-w-7xl mx-auto w-full">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto w-full hide-scrollbar scroll-smooth">
+          <div className="max-w-7xl mx-auto w-full p-4 sm:p-8 lg:p-10">
             {children}
+            <Footer />
           </div>
         </main>
       </div>

@@ -151,8 +151,136 @@ export default function HelpPage() {
         )}
       </div>
 
-      <div className="space-y-12">
-        {/* 1. FAQ Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Inquiry Stats & History */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* 1. Inquiry History Section (Now at Top) */}
+          <section className="bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] rounded-[40px] p-8 shadow-2xl h-full flex flex-col">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-black text-[var(--text-primary)] tracking-tight flex items-center gap-3">
+                <Clock size={24} className="text-blue-400" />
+                {isAdminView ? t.adminHistoryTitle : t.historyTitle}
+              </h2>
+              {inquiries.length > 0 && (
+                <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-[10px] font-black border border-blue-500/20">
+                  {inquiries.length} {language === 'ko' ? '기록' : 'Total'}
+                </span>
+              )}
+            </div>
+            
+            <div className="flex-1 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar space-y-4">
+              {inquiries.length === 0 ? (
+                <div className="h-40 flex flex-col items-center justify-center border-2 border-dashed border-[var(--card-border)] rounded-[32px] opacity-50">
+                  <p className="text-[var(--text-secondary)] text-[10px] font-black uppercase tracking-widest">{t.noRecords}</p>
+                </div>
+              ) : (
+                inquiries.map((inquiry) => (
+                  <div key={inquiry.id} className="bg-[var(--card-inner-bg)] border border-[var(--card-border)] rounded-[28px] p-6 hover:border-white/10 transition-all group/card">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.1em] ${
+                          inquiry.status === 'OPEN' 
+                            ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' 
+                            : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                        }`}>
+                          {inquiry.status}
+                        </span>
+                        <span className="text-[9px] text-[var(--text-secondary)] font-bold uppercase tracking-widest opacity-60">
+                          {new Date(inquiry.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      {isAdminView && (
+                        <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                          <User size={10} />
+                          <span className="text-[9px] font-black uppercase opacity-60">{inquiry.userName}</span>
+                        </div>
+                      )}
+                    </div>
+                    <h4 className="text-base font-bold text-[var(--text-primary)] mb-2 group-hover/card:text-cyan-400 transition-colors truncate">{inquiry.title}</h4>
+                    <p className="text-xs text-[var(--text-secondary)] font-medium line-clamp-2 leading-relaxed mb-4">{inquiry.content}</p>
+                    
+                    {isAdminView && inquiry.status === 'OPEN' && (
+                      <button 
+                        onClick={() => handleUpdateStatus(inquiry.id, 'CLOSED')}
+                        className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500 hover:text-emerald-400 transition-colors px-3 py-1.5 border border-emerald-500/20 rounded-xl bg-emerald-500/5 hover:bg-emerald-500/10"
+                      >
+                        <CheckCircle size={12} /> {t.resolved}
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+        </div>
+
+        {/* Right Column: Quick Inquiry & Stats Overview */}
+        <div className="space-y-8">
+          {/* 2. Compact Inquiry Trigger/Form */}
+          <section className="bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] rounded-[40px] p-8 shadow-2xl relative overflow-hidden h-full flex flex-col">
+            <div className="relative z-10 flex-1">
+              <div className="w-16 h-16 bg-cyan-500/10 rounded-2xl border border-cyan-500/20 flex items-center justify-center mb-6">
+                <MessageCircle size={32} className="text-cyan-400" />
+              </div>
+              <h2 className="text-xl font-black text-[var(--text-primary)] mb-3 tracking-tight">{t.directHelpTitle}</h2>
+              <p className="text-[var(--text-secondary)] font-medium mb-8 text-sm leading-relaxed">{t.directHelpDesc}</p>
+              
+              {!showForm ? (
+                <button 
+                  onClick={() => setShowForm(true)}
+                  className="w-full py-4 bg-cyan-500 text-black font-black rounded-2xl hover:bg-cyan-400 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-cyan-500/20 uppercase tracking-widest text-xs"
+                >
+                  {t.contactSupport}
+                </button>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4 animate-fade-in relative z-10">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest ml-1">{t.subject}</label>
+                    <input 
+                      type="text" 
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="w-full bg-[var(--card-inner-bg)] border border-[var(--card-border)] rounded-xl px-4 py-3 text-[var(--text-primary)] text-xs focus:outline-none focus:border-cyan-500/50 transition-all font-medium"
+                      placeholder={t.subjectPlaceholder}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest ml-1">{t.detail}</label>
+                    <textarea 
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      rows={3}
+                      className="w-full bg-[var(--card-inner-bg)] border border-[var(--card-border)] rounded-xl px-4 py-3 text-[var(--text-primary)] text-xs focus:outline-none focus:border-cyan-500/50 transition-all font-medium resize-none"
+                      placeholder={t.detailPlaceholder}
+                      required
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2 pt-2">
+                    <button 
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full py-3 bg-[var(--text-primary)] text-[var(--bg-primary)] text-[10px] font-black rounded-xl uppercase tracking-widest transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-2"
+                    >
+                      {isSubmitting ? t.sending : <>{t.sendInquiry} <Send size={12} /></>}
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setShowForm(false)}
+                      className="w-full py-3 text-[var(--text-secondary)] text-[10px] font-black rounded-xl uppercase tracking-widest hover:text-[var(--text-primary)] transition-all bg-[var(--bg-subtle)]"
+                    >
+                      {t.cancel}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div className="mt-12 space-y-12">
+        {/* 3. FAQ Section (Now at Middle/Bottom) */}
         <section className="bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] rounded-[40px] p-10 shadow-2xl">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-black text-[var(--text-primary)] tracking-tight flex items-center gap-3">
@@ -176,128 +304,6 @@ export default function HelpPage() {
                 <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium line-clamp-3">{faq.a}</p>
               </div>
             ))}
-          </div>
-        </section>
-
-        {/* 2. Inquiry Form Section */}
-        <section className="bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] rounded-[40px] p-10 shadow-2xl overflow-hidden relative">
-          <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
-            <div className="w-32 h-32 md:w-48 md:h-48 bg-cyan-500/10 rounded-[32px] border border-cyan-500/20 flex items-center justify-center shrink-0 hover:bg-cyan-500/20 transition-all duration-500">
-              <MessageCircle size={60} className="text-cyan-400" />
-            </div>
-            
-            <div className="flex-1 text-center md:text-left">
-              <h2 className="text-3xl font-black text-[var(--text-primary)] mb-4 tracking-tight">{t.directHelpTitle}</h2>
-              <p className="text-[var(--text-secondary)] font-medium mb-8 text-lg">{t.directHelpDesc}</p>
-              
-              {!showForm && (
-                <button 
-                  onClick={() => setShowForm(true)}
-                  className="px-10 py-4 bg-cyan-500 text-black font-black rounded-2xl hover:bg-cyan-400 hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(34,211,238,0.3)] uppercase tracking-widest text-sm"
-                >
-                  {t.contactSupport}
-                </button>
-              )}
-            </div>
-          </div>
-          
-          <div className="mt-8">
-            {showForm ? (
-              <form onSubmit={handleSubmit} className="space-y-6 animate-slide-in relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest ml-1">{t.subject}</label>
-                    <input 
-                      type="text" 
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      className="w-full bg-[var(--card-inner-bg)] border border-[var(--card-border)] rounded-2xl px-5 py-4 text-[var(--text-primary)] text-sm focus:outline-none focus:border-cyan-500/50 transition-all font-medium"
-                      placeholder={t.subjectPlaceholder}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest ml-1">{t.detail}</label>
-                  <textarea 
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    rows={4}
-                    className="w-full bg-[var(--card-inner-bg)] border border-[var(--card-border)] rounded-2xl px-5 py-4 text-[var(--text-primary)] text-sm focus:outline-none focus:border-cyan-500/50 transition-all font-medium resize-none shadow-inner"
-                    placeholder={t.detailPlaceholder}
-                    required
-                  />
-                </div>
-                <div className="flex gap-4">
-                  <button 
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="px-8 py-4 bg-[var(--text-primary)] text-[var(--bg-primary)] text-xs font-black rounded-2xl uppercase tracking-[0.2em] transition-all hover:scale-[1.05] active:scale-95 flex items-center gap-2 shadow-xl shadow-white/5"
-                  >
-                    {isSubmitting ? t.sending : <>{t.sendInquiry} <Send size={14} /></>}
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={() => setShowForm(false)}
-                    className="px-8 py-4 bg-[var(--card-inner-bg)] text-[var(--text-secondary)] text-xs font-bold rounded-2xl uppercase tracking-widest hover:text-[var(--text-primary)] transition-all border border-transparent hover:border-white/10"
-                  >
-                    {t.cancel}
-                  </button>
-                </div>
-              </form>
-            ) : null}
-          </div>
-        </section>
-
-        {/* 3. Inquiry History Section */}
-        <section className="bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] rounded-[40px] p-10 shadow-2xl">
-          <h2 className="text-2xl font-black text-[var(--text-primary)] mb-8 tracking-tight flex items-center gap-3">
-            <Clock size={24} className="text-blue-400" />
-            {isAdminView ? t.adminHistoryTitle : t.historyTitle}
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {inquiries.length === 0 ? (
-              <div className="md:col-span-2 text-center py-16 border-2 border-dashed border-[var(--card-border)] rounded-[32px]">
-                <p className="text-[var(--text-secondary)] text-sm font-bold uppercase tracking-widest">{t.noRecords}</p>
-              </div>
-            ) : (
-              inquiries.map((inquiry) => (
-                <div key={inquiry.id} className="bg-[var(--card-inner-bg)] border border-[var(--card-border)] rounded-[32px] p-8 hover:border-white/10 transition-all group/card">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-4">
-                      <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.1em] ${
-                        inquiry.status === 'OPEN' 
-                          ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' 
-                          : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
-                      }`}>
-                        {inquiry.status}
-                      </span>
-                      <span className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-widest">
-                        {new Date(inquiry.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                    {isAdminView && (
-                      <div className="flex items-center gap-2 text-[var(--text-secondary)]">
-                        <User size={12} />
-                        <span className="text-[10px] font-bold uppercase">{inquiry.userName}</span>
-                      </div>
-                    )}
-                  </div>
-                  <h4 className="text-lg font-bold text-[var(--text-primary)] mb-3 group-hover/card:text-cyan-400 transition-colors">{inquiry.title}</h4>
-                  <p className="text-sm text-[var(--text-secondary)] font-medium line-clamp-3 leading-relaxed mb-6">{inquiry.content}</p>
-                  
-                  {isAdminView && inquiry.status === 'OPEN' && (
-                    <button 
-                      onClick={() => handleUpdateStatus(inquiry.id, 'CLOSED')}
-                      className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500 hover:text-emerald-400 transition-colors px-4 py-2 border border-emerald-500/20 rounded-xl bg-emerald-500/5 hover:bg-emerald-500/10"
-                    >
-                      <CheckCircle size={14} /> {t.resolved}
-                    </button>
-                  )}
-                </div>
-              ))
-            )}
           </div>
         </section>
       </div>
