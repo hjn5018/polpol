@@ -70,7 +70,7 @@ export default function LoginPage() {
             onClick={() => setShowLanguage(!showLanguage)}
             className="flex items-center gap-2 p-2 rounded-xl text-[var(--text-primary)] hover:bg-[var(--card-border)]/50 transition-colors group"
           >
-            <Globe size={18} className="group-hover:text-cyan-400 transition-colors" />
+            <Globe size={18} className="group-hover:text-[var(--primary)] transition-colors" />
             <span className="text-xs font-bold uppercase tracking-wider hidden md:block">
               {language === 'en' ? 'English' : '한국어'}
             </span>
@@ -87,7 +87,7 @@ export default function LoginPage() {
               </button>
               <button
                 onClick={() => { setLanguage('ko'); setShowLanguage(false); }}
-                className={`w-full px-4 py-2 text-left text-xs font-bold hover:bg-white/5 transition-colors ${language === 'ko' ? 'text-cyan-400' : 'text-[var(--text-primary)]'}`}
+                className={`w-full px-4 py-2 text-left text-xs font-bold hover:bg-white/5 transition-colors ${language === 'ko' ? 'text-[var(--primary)]' : 'text-[var(--text-primary)]'}`}
               >
                 한국어
               </button>
@@ -103,13 +103,14 @@ export default function LoginPage() {
           {isDarkMode ? (
             <Sun size={18} className="group-hover:text-yellow-400 transition-colors" />
           ) : (
-            <Moon size={18} className="group-hover:text-indigo-400 transition-colors" />
+            <Moon size={18} className="group-hover:text-[var(--primary)] transition-colors" />
           )}
         </button>
       </div>
 
-      {/* Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+      {/* Background Glowing Effects */}
+      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[var(--primary-glow)] rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="bg-[var(--card-bg)] backdrop-blur-xl p-8 sm:p-10 rounded-2xl shadow-2xl w-full max-w-md border border-[var(--card-border)] z-10 relative">
         <div className="text-center mb-10">
@@ -133,7 +134,7 @@ export default function LoginPage() {
               type="text" 
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
-              className="w-full px-4 py-3.5 rounded-xl border border-[var(--card-border)] focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none bg-[var(--input-bg)] text-[var(--text-primary)] placeholder-gray-600 shadow-inner"
+              className="w-full px-4 py-3.5 rounded-xl border border-[var(--card-border)] focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition outline-none bg-[var(--input-bg)] text-[var(--text-primary)] placeholder-gray-600 shadow-inner"
               placeholder={t.placeholderId}
               required
             />
@@ -144,7 +145,7 @@ export default function LoginPage() {
               type="password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3.5 rounded-xl border border-[var(--card-border)] focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none bg-[var(--input-bg)] text-[var(--text-primary)] placeholder-gray-600 shadow-inner"
+              className="w-full px-4 py-3.5 rounded-xl border border-[var(--card-border)] focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition outline-none bg-[var(--input-bg)] text-[var(--text-primary)] placeholder-gray-600 shadow-inner"
               placeholder="••••••••"
               required
             />
@@ -152,14 +153,14 @@ export default function LoginPage() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full py-4 mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)] hover:shadow-[0_0_25px_rgba(6,182,212,0.4)] disabled:opacity-70 flex justify-center items-center"
+            className="w-full py-4 mt-4 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-hover)] text-white rounded-xl font-bold transition-all shadow-[0_0_15px_var(--primary-glow)] hover:shadow-[0_0_25px_var(--primary-glow)] disabled:opacity-70 flex justify-center items-center"
           >
             {loading ? t.loggingIn : t.login}
           </button>
         </form>
         <div className="mt-8 text-center text-sm text-[var(--text-secondary)]">
           {t.noAccount}
-          <Link to="/signup" className="ml-2 text-cyan-500 font-bold hover:text-cyan-400 transition-colors">
+          <Link to="/signup" className="ml-2 text-[var(--primary)] font-bold hover:text-[var(--primary-hover)] transition-colors">
             {t.signup}
           </Link>
         </div>

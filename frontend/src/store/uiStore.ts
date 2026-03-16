@@ -15,7 +15,7 @@ export const useUIStore = create<UIState>((set) => ({
     localStorage.setItem('language', lang);
     set({ language: lang });
   },
-  isDarkMode: localStorage.getItem('theme') !== 'light', // Default to dark mode (true) if null or 'dark'
+  isDarkMode: localStorage.getItem('theme') === 'dark', // Default to light mode (false) if null or 'light'
   toggleDarkMode: () => {
     set((state) => {
       const newMode = !state.isDarkMode;

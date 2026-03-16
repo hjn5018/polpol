@@ -3,6 +3,7 @@ package com.pol.gg.backend.controller;
 import com.pol.gg.backend.domain.user.User;
 import com.pol.gg.backend.domain.user.UserRepository;
 import com.pol.gg.backend.dto.user.UserResponse;
+import com.pol.gg.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getMyInfo() {
@@ -30,6 +32,31 @@ public class UserController {
                 .studentId(user.getStudentId())
                 .email(user.getEmail())
                 .name(user.getName())
+                .profileImageUrl(user.getProfileImageUrl())
                 .build());
+    }
+
+    @org.springframework.web.bind.annotation.PutMapping("")
+    public ResponseEntity<UserResponse> updateName(@org.springframework.web.bind.annotation.RequestBody com.pol.gg.backend.dto.user.UserUpdateDto.NameRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String studentId = authentication.getName();
+
+        User user = userService.updateNameAndProfile(studentId, request);
+
+        return ResponseEntity.ok(UserResponse.builder()
+                .studentId(user.getStudentId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build());
+    }
+
+    @org.springframework.web.bind.annotation.PutMapping("/password")
+    public ResponseEntity<Void> updatePassword(@org.springframework.web.bind.annotation.RequestBody com.pol.gg.backend.dto.user.UserUpdateDto.PasswordRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String studentId = authentication.getName();
+
+        userService.updatePassword(studentId, request);
+        return ResponseEntity.ok().build();
     }
 }

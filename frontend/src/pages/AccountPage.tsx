@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { UserCircle, Shield, Key, Check, AlertCircle } from 'lucide-react';
+import { UserCircle, Shield, Key, Check, AlertCircle, Camera, X, Pencil } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
 import axios from 'axios';
@@ -13,12 +13,19 @@ const translations = {
     fullName: 'Full Name',
     fullNamePlaceholder: 'Enter your full name',
     updateInfo: 'Update information',
+    profileImage: 'Profile Image',
+    selectImage: 'Select Photo',
+    successProfile: 'Profile updated successfully.',
+    errorProfile: 'Failed to update profile.',
     security: 'Security',
     securitySub: 'Manage account safety',
+    currentPassword: 'Current Password',
+    currentPasswordPlaceholder: '••••••••',
     newPassword: 'New Password',
-    newPasswordPlaceholder: 'At least 8 characters',
+    newPasswordPlaceholder: '••••••••',
     confirmPassword: 'Confirm Password',
-    confirmPasswordPlaceholder: 'Repeat new password',
+    confirmPasswordPlaceholder: '••••••••',
+    passwordHint: 'At least 8 characters with letters, numbers, and special characters',
     updatePassword: 'Update password',
     deactivateTitle: 'Deactivate Account',
     deactivateSub: 'Once you delete your account, there is no going back. Please be certain.',
@@ -28,6 +35,7 @@ const translations = {
     errorMatch: 'Passwords do not match.',
     successPass: 'Password updated successfully.',
     errorPass: 'Failed to update password.',
+    errorCurrentPass: 'Check your current password.',
   },
   ko: {
     title: '계정 설정',
@@ -37,12 +45,19 @@ const translations = {
     fullName: '성명',
     fullNamePlaceholder: '성명을 입력하세요',
     updateInfo: '정보 업데이트',
+    profileImage: '프로필 이미지',
+    selectImage: '사진 선택',
+    successProfile: '프로필이 성공적으로 업데이트되었습니다.',
+    errorProfile: '프로필 업데이트에 실패했습니다.',
     security: '보안',
     securitySub: '계정 보안 관리',
+    currentPassword: '현재 비밀번호',
+    currentPasswordPlaceholder: '••••••••',
     newPassword: '새 비밀번호',
-    newPasswordPlaceholder: '최소 8자 이상',
+    newPasswordPlaceholder: '••••••••',
     confirmPassword: '비밀번호 확인',
-    confirmPasswordPlaceholder: '새 비밀번호를 다시 입력하세요',
+    confirmPasswordPlaceholder: '••••••••',
+    passwordHint: '8자 이상의 영문, 숫자, 특수문자 조합',
     updatePassword: '비밀번호 업데이트',
     deactivateTitle: '계정 탈퇴',
     deactivateSub: '계정을 삭제하면 되돌릴 수 없습니다. 신중하게 선택해주세요.',
@@ -52,6 +67,7 @@ const translations = {
     errorMatch: '비밀번호가 일치하지 않습니다.',
     successPass: '비밀번호가 성공적으로 업데이트되었습니다.',
     errorPass: '비밀번호 업데이트에 실패했습니다.',
+    errorCurrentPass: '현재 비밀번호를 확인해주세요.',
   },
 };
 
@@ -59,6 +75,9 @@ export default function AccountPage() {
   const { user, setUser } = useAuthStore();
   const { language } = useUIStore();
   const [name, setName] = useState(user?.name || '');
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [profileImage, setProfileImage] = useState(user?.profileImageUrl || null);
+  const [currentPassword, setCurrentPassword] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
@@ -66,17 +85,36 @@ export default function AccountPage() {
 
   const t = translations[language as keyof typeof translations] || translations.en;
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert(language === 'ko' ? '이미지 크기는 2MB 이하여야 합니다.' : 'Image size must be less than 2MB.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleUpdateName = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUpdating(true);
     setMessage(null);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put('http://localhost:8080/api/users/me', { name }, {
+      const response = await axios.put('http://localhost:8080/api/users/me', { 
+        name,
+        profileImageUrl: profileImage
+      }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(response.data);
-      setMessage({ type: 'success', text: t.successName });
+      setMessage({ type: 'success', text: t.successProfile });
+      setIsEditingName(false);
     } catch (error) {
       setMessage({ type: 'error', text: t.errorName });
     } finally {
@@ -94,14 +132,19 @@ export default function AccountPage() {
     setMessage(null);
     try {
       const token = localStorage.getItem('token');
-      await axios.put('http://localhost:8080/api/users/me/password', { password }, {
+      await axios.put('http://localhost:8080/api/users/me/password', { 
+        currentPassword, 
+        newPassword: password 
+      }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setPassword('');
       setConfirmPassword('');
+      setCurrentPassword('');
       setMessage({ type: 'success', text: t.successPass });
-    } catch (error) {
-      setMessage({ type: 'error', text: t.errorPass });
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.message || error.response?.data || t.errorPass;
+      setMessage({ type: 'error', text: errorMsg });
     } finally {
       setIsUpdating(false);
     }
@@ -137,19 +180,62 @@ export default function AccountPage() {
           </div>
           
           <form onSubmit={handleUpdateName} className="p-8 flex-1 flex flex-col h-full">
-            <div className="flex-1 flex flex-col justify-center min-h-[160px]">
+            {/* Profile Image In Account */}
+            <div className="flex flex-col items-center mb-10">
+              <div className="relative group">
+                <div className="w-28 h-28 rounded-full bg-[var(--bg-subtle)] border-2 border-dashed border-[var(--card-border)] flex items-center justify-center overflow-hidden transition-all group-hover:border-[var(--primary)] shadow-inner">
+                  {profileImage ? (
+                    <img src={profileImage} alt="Profile preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <UserCircle size={48} className="text-[var(--text-secondary)] opacity-30" />
+                  )}
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded-full cursor-pointer">
+                  <Camera size={24} className="text-white" />
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleImageChange}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                </div>
+                {profileImage && (
+                  <button 
+                    type="button"
+                    onClick={() => setProfileImage(null)}
+                    className="absolute -top-1 -right-1 bg-red-500 text-white p-1.5 rounded-full shadow-lg hover:bg-red-600 transition-colors z-10"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+              <p className="mt-3 text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-[0.2em]">{t.profileImage}</p>
+            </div>
+
+            <div className="flex-1 flex flex-col justify-center">
               <div className="space-y-4">
                 <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest ml-1 text-center block">{t.fullName}</label>
                 <div className="relative group max-w-sm mx-auto w-full">
                   <input 
                     type="text" 
                     value={name}
+                    disabled={!isEditingName}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-[var(--bg-subtle)] border border-[var(--card-border)] rounded-2xl px-5 py-4 text-[var(--text-primary)] text-sm focus:outline-none focus:border-cyan-500/50 transition-all placeholder:text-gray-700 text-center"
+                    className={`w-full bg-[var(--bg-subtle)] border border-[var(--card-border)] rounded-2xl px-5 py-4 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--primary)]/50 transition-all placeholder:text-gray-700 text-center ${!isEditingName ? 'cursor-not-allowed opacity-80' : ''}`}
                     placeholder={t.fullNamePlaceholder}
                     required
                   />
-                  <UserCircle size={18} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 group-hover:text-cyan-400 transition-colors" />
+                  {!isEditingName ? (
+                    <button 
+                      type="button"
+                      onClick={() => setIsEditingName(true)}
+                      className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-[var(--primary)] transition-colors p-1"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                  ) : (
+                    <UserCircle size={18} className="absolute right-5 top-1/2 -translate-y-1/2 text-[var(--primary)]" />
+                  )}
                 </div>
               </div>
             </div>
@@ -157,8 +243,8 @@ export default function AccountPage() {
             <div className="mt-8">
               <button 
                 type="submit"
-                disabled={isUpdating || name === user?.name}
-                className="w-full py-4 bg-white hover:bg-cyan-400 disabled:bg-gray-800 disabled:text-gray-600 text-black text-xs font-black rounded-2xl uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center justify-center gap-2"
+                disabled={isUpdating || !isEditingName || (name === user?.name && profileImage === user?.profileImageUrl)}
+                className="w-full py-4 bg-[var(--primary)] hover:bg-[var(--primary-hover)] disabled:opacity-50 text-white text-xs font-black rounded-2xl uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center justify-center gap-2 shadow-[0_0_15px_var(--primary-glow)]"
               >
                 {t.updateInfo}
               </button>
@@ -179,7 +265,22 @@ export default function AccountPage() {
           </div>
 
           <form onSubmit={handleUpdatePassword} className="p-8 space-y-6 flex-1 flex flex-col h-full">
-            <div className="space-y-6 flex-1 flex flex-col justify-center min-h-[160px]">
+            <div className="space-y-6 flex-1 flex flex-col justify-center">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest ml-1">{t.currentPassword}</label>
+                <div className="relative group">
+                  <input 
+                    type="password" 
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--card-border)] rounded-2xl px-5 py-4 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--primary)]/50 transition-all placeholder:text-gray-700"
+                    placeholder="••••••••"
+                    required
+                  />
+                  <Shield size={18} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 group-hover:text-[var(--primary)] transition-colors" />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest ml-1">{t.newPassword}</label>
                 <div className="relative group">
@@ -187,12 +288,15 @@ export default function AccountPage() {
                     type="password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-[var(--bg-subtle)] border border-[var(--card-border)] rounded-2xl px-5 py-4 text-[var(--text-primary)] text-sm focus:outline-none focus:border-amber-500/50 transition-all placeholder:text-gray-700"
-                    placeholder={t.newPasswordPlaceholder}
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--card-border)] rounded-2xl px-5 py-4 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--primary)]/50 transition-all placeholder:text-gray-700"
+                    placeholder="••••••••"
                     required
                   />
-                  <Key size={18} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 group-hover:text-amber-400 transition-colors" />
+                  <Key size={18} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 group-hover:text-[var(--primary)] transition-colors" />
                 </div>
+                <p className="mt-2 text-[10px] text-[var(--text-secondary)] opacity-80 font-medium pl-1">
+                  {t.passwordHint}
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -202,11 +306,11 @@ export default function AccountPage() {
                     type="password" 
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full bg-[var(--bg-subtle)] border border-[var(--card-border)] rounded-2xl px-5 py-4 text-[var(--text-primary)] text-sm focus:outline-none focus:border-amber-500/50 transition-all placeholder:text-gray-700"
-                    placeholder={t.confirmPasswordPlaceholder}
+                    className="w-full bg-[var(--bg-subtle)] border border-[var(--card-border)] rounded-2xl px-5 py-4 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--primary)]/50 transition-all placeholder:text-gray-700"
+                    placeholder="••••••••"
                     required
                   />
-                  <Key size={18} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 group-hover:text-amber-400 transition-colors" />
+                  <Key size={18} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 group-hover:text-[var(--primary)] transition-colors" />
                 </div>
               </div>
             </div>
@@ -214,7 +318,7 @@ export default function AccountPage() {
             <button 
               type="submit"
               disabled={isUpdating || !password || password !== confirmPassword}
-              className="w-full py-4 bg-[var(--button-bg)] hover:bg-[var(--text-primary)] hover:text-[var(--background)] border border-[var(--button-border)] disabled:border-gray-800 disabled:text-gray-600 text-[var(--text-secondary)] text-xs font-black rounded-2xl uppercase tracking-[0.2em] transition-all active:scale-95"
+              className="w-full py-4 bg-[var(--primary)] hover:bg-[var(--primary-hover)] disabled:opacity-50 text-white text-xs font-black rounded-2xl uppercase tracking-[0.2em] transition-all active:scale-95 shadow-[0_0_15px_var(--primary-glow)]"
             >
               {t.updatePassword}
             </button>

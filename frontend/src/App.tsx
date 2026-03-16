@@ -22,10 +22,10 @@ import { useEffect } from 'react';
 
 // Initialize theme
 const theme = localStorage.getItem('theme');
-if (theme === 'light') {
-  document.documentElement.classList.add('light-theme');
-} else {
+if (theme === 'dark') {
   document.documentElement.classList.remove('light-theme');
+} else {
+  document.documentElement.classList.add('light-theme');
 }
 
 // Protected Route Component

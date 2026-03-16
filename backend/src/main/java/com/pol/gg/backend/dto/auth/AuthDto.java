@@ -20,6 +20,8 @@ public class AuthDto {
         private String email;
         private String password;
         private String name;
+        private String department;
+        private String profileImageUrl;
     }
 
     @Data

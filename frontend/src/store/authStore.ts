@@ -4,6 +4,7 @@ interface User {
   studentId: string;
   email: string;
   name: string;
+  profileImageUrl: string | null;
   role: 'STUDENT' | 'COUNCIL' | 'ADMIN';
 }
 

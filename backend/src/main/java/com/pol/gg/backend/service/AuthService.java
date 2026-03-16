@@ -32,11 +32,20 @@ public class AuthService {
             throw new IllegalArgumentException("Email already exists.");
         }
 
+        // Password complexity validation
+        String password = request.getPassword();
+        String passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$";
+        if (!password.matches(passwordRegex)) {
+            throw new IllegalArgumentException("Password must be at least 8 characters and include letters, numbers, and special characters.");
+        }
+
         User user = User.builder()
                 .studentId(request.getStudentId())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
+                .department(request.getDepartment())
+                .profileImageUrl(request.getProfileImageUrl())
                 .role(Role.STUDENT)
                 .build();
 
