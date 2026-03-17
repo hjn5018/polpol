@@ -8,6 +8,7 @@
 - [x] 데이터베이스 스키마 설계 및 테이블 생성, 백엔드와 DB 연결.
 - [x] 프론트엔드 ESLint/Prettier 포매터 구성.
 - [x] 기초 API 경로(Path) 및 전역 예외 처리(Error Handling) 세팅.
+- [x] **[NEW] 개발 환경 자동화**: `dev` 프로필 시딩 시스템 구축 (서버 실행 시 DB 리셋 및 더미 데이터 삽입).
 
 ## Phase 2: 인증 및 유저 관리 (Authentication & User Details)
 - [x] 유저(User) 엔티티 및 Spring Security 기반 JWT 인증 시스템 구현.
@@ -54,18 +55,19 @@
 ## Phase 5: 소셜 및 커뮤니티 피드 (Social & Community Feed - 핵심 서비스 2)
 - [x] HackerNews 디자인 패턴을 차용한 메인 페이지 "기업 지원 현황 공유 피드" API 구현.
 - [x] 기업 지원 현황 목록을 노출할 메인 페이지 통합 UI 개발.
+- [x] **[NEW] 채용 시스템 세분화**: 기업 구인(Corporate) 및 프로젝트 구인(Project) 구분 및 엔티티 구현.
 - [ ] 학과 맞춤형 자격증 안내/공유 게시판 API 및 프론트엔드 페이지 개발.
-- [ ] 자유게시판(일반 소통) 및 학기별 커리큘럼/시간표 조회 기능(API/프론트엔드) 개발.
+- [x] 자유게시판(일반 소통) 및 학과 전용 게시판 백엔드 엔티티(`Post`) 및 시딩 완료.
 
 ## Phase 6: polbook - 중고 거래 직거래 플랫폼 (Second-hand Market - 핵심 서비스 3)
-- [ ] 거래 물품(Market Item) 엔티티 및 API 개발.
-- [ ] polbook 전용 페이지 리스트 UI 개발.
+- [x] 거래 물품(Trade) 엔티티 및 API 레포지토리 구축.
+- [x] polbook(중고 마켓) 더미 데이터 시딩 완료.
 - [ ] WebSockets / STOMP를 활용한 1:1 실시간 채팅 기능 구현.
 - [ ] 거래완료 후 매너 온도(별점) 평가 시스템 구축.
 
 ## Phase 7: 관리자 및 인공지능 스마트 서비스
-- [ ] 학생회 소통 페이지 전용 게시물 시스템 구축.
-- [ ] 관리자 대시보드(권한 관리, 신고 처리) 개발.
+- [x] 학생회 소통 및 공지사항(`Post` - COUNCIL 카테고리) 백엔드 연동 준비.
+- [x] 자주 묻는 질문(FAQ) 백엔드 엔티티 및 정렬 시스템(`sortOrder`) 구현.
 - [ ] 인공지능 LLM 기반 Q&A 챗봇 모듈화 및 연결.
 
 ## Phase 8: 폴리싱 및 배포 (Polish & Deployment)

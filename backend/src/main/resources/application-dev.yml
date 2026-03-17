@@ -1,0 +1,23 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/polpol_db?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=UTF8
+    username: root
+    password: password 
+
+  jpa:
+    hibernate:
+      ddl-auto: create # Deletes and recreates tables on startup
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace

@@ -31,7 +31,7 @@ export default function IntroPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--background)] relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
       {/* Settings Bar */}
       <div className="absolute top-6 right-8 z-50 flex items-center gap-4">
         <div className="relative">
@@ -76,10 +76,6 @@ export default function IntroPage() {
           )}
         </button>
       </div>
-
-      {/* Background glowing effects */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[var(--primary-glow)] rounded-full blur-[100px] pointer-events-none"></div>
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="z-10 text-center space-y-10 max-w-3xl px-4">
         <div className="flex justify-center mb-4">

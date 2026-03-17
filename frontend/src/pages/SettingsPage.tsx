@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Bell, Shield, Check } from 'lucide-react';
+import { Bell, Shield, Check, MousePointer2 } from 'lucide-react';
 import { useUIStore } from '../store/uiStore';
 
 export default function SettingsPage() {
-  const { language } = useUIStore();
+  const { language, showFloatingButtons, toggleFloatingButtons } = useUIStore();
   
   // Toggle states
   const [settings, setSettings] = useState({
@@ -53,6 +53,13 @@ export default function SettingsPage() {
         { id: 'dataUsage', label: language === 'en' ? 'Data Usage' : '데이터 사용량' },
       ] 
     },
+    { 
+      title: language === 'en' ? 'Display' : '화면 설정', 
+      icon: <MousePointer2 size={18} />, 
+      items: [
+        { id: 'floatingButtons', label: language === 'en' ? 'Show Floating Buttons' : '플로팅 버튼 표시' },
+      ] 
+    },
   ];
 
   const t = {
@@ -88,17 +95,24 @@ export default function SettingsPage() {
                 return (
                   <div 
                     key={item.id} 
-                    onClick={() => toggleSetting(item.id as keyof typeof settings, item.label)}
+                    onClick={() => {
+                      if (item.id === 'floatingButtons') {
+                        toggleFloatingButtons();
+                        showToast(item.label);
+                      } else {
+                        toggleSetting(item.id as keyof typeof settings, item.label);
+                      }
+                    }}
                     className="flex items-center justify-between group/item cursor-pointer"
                   >
                     <span className="text-sm text-[var(--text-secondary)] group-hover/item:text-[var(--text-primary)] transition-colors">{item.label}</span>
                     <div className={`w-10 h-6 rounded-full border p-1 flex items-center transition-all ${
-                      isActive 
+                      (item.id === 'floatingButtons' ? showFloatingButtons : settings[item.id as keyof typeof settings])
                         ? 'bg-cyan-500/20 border-cyan-500/50 justify-end' 
                         : 'bg-[var(--card-inner-bg)] border-[var(--card-border)] justify-start'
                     }`}>
                       <div className={`w-4 h-4 rounded-full transition-all ${
-                        isActive ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.5)]' : 'bg-gray-600'
+                        (item.id === 'floatingButtons' ? showFloatingButtons : settings[item.id as keyof typeof settings]) ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.5)]' : 'bg-gray-600'
                       }`}></div>
                     </div>
                   </div>

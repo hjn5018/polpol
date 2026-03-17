@@ -1,6 +1,8 @@
 spring:
   application:
     name: backend
+  profiles:
+    active: dev
 
   datasource:
     url: jdbc:mysql://localhost:3306/polpol_db?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=UTF8

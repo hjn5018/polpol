@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Library, UserCircle, LayoutDashboard, Settings, Briefcase, Home, Users, ShoppingBag, MessageSquare, Menu, HelpCircle } from 'lucide-react';
+import { Library, UserCircle, LayoutDashboard, Settings, Briefcase, Home, Users, ShoppingBag, MessageSquare, Menu, HelpCircle, Megaphone, Code } from 'lucide-react';
 import { useUIStore } from '../store/uiStore';
 
 export default function Sidebar() {
@@ -12,6 +12,8 @@ export default function Sidebar() {
       recruitment: 'Job Applications',
       community: 'Community',
       trade: 'Flea Market',
+      jobPosts: 'Corporate Recruitment',
+      projectRecruitment: 'Project Recruitment',
       studentCouncil: 'Council',
       dashboard: 'Dashboard',
       portfolio: 'Portfolio',
@@ -28,6 +30,8 @@ export default function Sidebar() {
       recruitment: '지원 현황',
       community: '커뮤니티',
       trade: '중고거래',
+      jobPosts: '기업 구인',
+      projectRecruitment: '프로젝트 구인',
       studentCouncil: '학생회 창구',
       dashboard: '대시보드',
       portfolio: '포트폴리오',
@@ -58,6 +62,8 @@ export default function Sidebar() {
     { name: t.trade, path: '/trade', icon: ShoppingBag, color: 'text-amber-500', bg: 'bg-amber-500/10' },
     { name: t.community, path: '/community', icon: Users, color: 'text-purple-500', bg: 'bg-purple-500/10' },
     { name: t.studentCouncil, path: '/council', icon: MessageSquare, color: 'text-green-500', bg: 'bg-green-500/10' },
+    { name: t.jobPosts, path: '/job-posts', icon: Megaphone, color: 'text-rose-500', bg: 'bg-rose-500/10' },
+    { name: t.projectRecruitment, path: '/project-recruitment', icon: Code, color: 'text-amber-500', bg: 'bg-amber-500/10' },
   ];
 
   const myPageItems = [

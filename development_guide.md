@@ -14,9 +14,16 @@
 - **커밋 메시지:** Conventional Commits 표준을 사용합니다 (예: `feat: 회원가입 이메일 인증 추가`, `fix: 에스크로 결제 오류 수정`).
 
 ### 로컬 환경 세팅 (Local Environment Setup)
-- **데이터베이스:** 로컬 환경 또는 Docker를 통해 MySQL(혹은 PostgreSQL)을 실행합니다.
-- **백엔드:** IDE에서 프로젝트를 열고 `spring-boot:run`을 실행합니다.
-- **프론트엔드:** 터미널에서 `npm install` 후 `npm run dev` (또는 `start`)를 실행합니다.
+- **데이터베이스:** 로컬 환경 또는 Docker를 통해 MySQL을 실행합니다. (`docker-compose up -d`)
+- **백엔드:**
+  - `application.yml`에서 `spring.profiles.active: dev`로 설정되어 있는지 확인합니다.
+  - `./gradlew bootRun` 실행 시, `dev` 프로필이 활성화되면 자동으로 DB 테이블이 재생성(`drop-and-create`)되고 더미 데이터가 삽입됩니다.
+- **프론트엔드:** 터미널에서 `npm install` 후 `npm run dev`를 실행합니다.
+
+### 데이터베이스 초기화 및 시딩 (Database Seeding)
+- **전략:** 개발 편의성을 위해 서버 시작 시마다 DB를 초기 상태로 리셋합니다.
+- **수정 방법:** 더미 데이터를 추가하거나 수정하려면 `backend/src/main/java/com/pol/gg/backend/global/initializer/DataInitializer.java` 파일을 편집하세요.
+- **계정 정보:** 생성된 모든 더미 유저의 비밀번호는 `1234`로 암호화되어 저장됩니다.
 
 ---
 

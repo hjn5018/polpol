@@ -62,7 +62,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--background)] p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       {/* Settings Bar */}
       <div className="absolute top-6 right-8 z-50 flex items-center gap-4">
         <div className="relative">
@@ -107,10 +107,6 @@ export default function LoginPage() {
           )}
         </button>
       </div>
-
-      {/* Background Glowing Effects */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[var(--primary-glow)] rounded-full blur-[100px] pointer-events-none"></div>
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="bg-[var(--card-bg)] backdrop-blur-xl p-8 sm:p-10 rounded-2xl shadow-2xl w-full max-w-md border border-[var(--card-border)] z-10 relative">
         <div className="text-center mb-10">

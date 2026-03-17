@@ -54,32 +54,48 @@
   - `id` (PK)
   - `user_id` (FK)
   - `company_name` (지원 기업)
-  - `apply_date` (지원 날짜)
-  - `status` (지원 상태: 검토 중, 서류 합격 등)
-  - `channel` (지원 채널: 사람인, 원티드 등)
-  - `portfolio_id` (제출한 포트폴리오, FK - nullable)
-  - `is_public` (공개 여부, Boolean)
+  - `position` (지원 직무)
+  - `applied_at` (지원 날짜)
+  - `status` (지원 상태: APPLIED, INTERVIEWING, OFFERED, HIRED, REJECTED)
+  - `location`, `salary` (근무지, 급여 정보)
 
-- **게시글 (BoardPost) - 자유, 자격증, 학생회**
+- **채용 공고 (JobPosting) - 기업/프로젝트**
+  - `id` (PK)
+  - `author_id` (FK)
+  - `type` (구분: CORPORATE, PROJECT)
+  - `title` (제목)
+  - `company` (기업명 - 기업형 전용)
+  - `image_url`
+  - `tags` (기술 스택 등)
+  - `created_at`
+
+- **게시글 (Post) - 자유, 질문, 잡담, 학생회 공지**
   - `id` (PK)
   - `author_id` (작성자, FK)
-  - `board_type` (게시판 타입: FREE, CERT, COUNCIL_NOTICE, COUNCIL_SURVEY, FAQ)
+  - `category` (카테고리: 질문, 잡담, 공지 등)
   - `title` (제목)
   - `content` (내용)
-  - `created_at`, `updated_at`
+  - `department` (작성자 학과)
+  - `image_url`
+  - `tags` (태그 리스트)
+  - `views`, `likes` (조회수, 좋아요)
+  - `created_at`
 
-- **중고 거래 물품 (MarketItem)**
+- **중고 거래 물품 (Trade)**
   - `id` (PK)
-  - `seller_id` (판매자, FK)
-  - `title` (책/물품 제목)
+  - `author_id` (판매자, FK)
+  - `title` (물품 제목)
   - `price` (판매 가격)
-  - `description` (상세 설명)
-  - `category` (카테고리: 전공 서적 등)
-  - `condition` (상태: S, A, B 등)
-  - `has_notes` (필기 여부, Boolean)
-  - `meeting_place` (거래 희망 장소)
-  - `status` (상태: 판매중, 예약중, 거래완료)
-  - `image_urls` (JSON/Array, 여러 장의 사진)
+  - `imageUrl` (상품 이미지)
+  - `tags` (태그: 급처, 전공서적 등)
+  - `created_at`
+
+- **자주 묻는 질문 (FAQ)**
+  - `id` (PK)
+  - `category` (분류)
+  - `question` (질문)
+  - `answer` (답변)
+  - `sort_order` (출력 순서)
 
 - **안전결제 에스크로 내역 (MarketTransaction)**
   - `id` (PK)
@@ -108,42 +124,53 @@
 erDiagram
     USER ||--o{ PORTFOLIO : "보유함 (has)"
     USER ||--o{ JOB_APPLICATION : "지원함 (makes)"
-    USER ||--o{ BOARD_POST : "작성함 (writes)"
-    USER ||--o{ MARKET_ITEM : "판매함 (sells)"
-    MARKET_ITEM ||--o| MARKET_TRANSACTION : "관련됨 (involved_in)"
-    USER ||--o{ MARKET_TRANSACTION : "구매함 (buys)"
-    USER ||--o{ CHAT_ROOM : "참여함 (participates)"
-    CHAT_ROOM ||--o{ CHAT_MESSAGE : "포함함 (contains)"
+    USER ||--o{ POST : "작성함 (writes)"
+    USER ||--o{ JOB_POSTING : "등록함 (posts)"
+    USER ||--o{ TRADE : "판매함 (sells)"
     
     USER {
-        string id PK
+        bigint id PK
         string student_id
         string email
+        string password
+        string name
         string role
-        float manner_temperature
+        string department
+        double manner_temperature
     }
-    PORTFOLIO {
-        int id PK
-        string user_id FK
-        boolean is_public
+    POST {
+        bigint id PK
+        string category
+        string title
+        string content
+        bigint author_id FK
+        string department
+    }
+    JOB_POSTING {
+        bigint id PK
+        string type
+        string title
+        string company
+        bigint author_id FK
     }
     JOB_APPLICATION {
-        int id PK
-        string user_id FK
+        bigint id PK
+        bigint user_id FK
         string company_name
+        string position
         string status
     }
-    MARKET_ITEM {
-        int id PK
-        string seller_id FK
+    TRADE {
+        bigint id PK
+        bigint author_id FK
         string title
-        int price
-        string status
+        string price
     }
-    MARKET_TRANSACTION {
-        int id PK
-        int item_id FK
-        string buyer_id FK
-        string status
+    FAQ {
+        bigint id PK
+        string category
+        string question
+        string answer
+        int sort_order
     }
 ```

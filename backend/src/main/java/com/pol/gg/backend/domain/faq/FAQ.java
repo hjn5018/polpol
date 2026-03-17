@@ -30,15 +30,18 @@ public class FAQ {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String answer;
 
+    @Column(name = "sort_order")
+    private int sortOrder;
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public FAQ(String category, String question, String answer) {
+    public FAQ(String category, String question, String answer, int sortOrder) {
         this.category = category;
         this.question = question;
         this.answer = answer;
+        this.sortOrder = sortOrder;
     }
 }

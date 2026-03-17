@@ -7,6 +7,10 @@ interface UIState {
   toggleDarkMode: () => void;
   isSidebarCollapsed: boolean;
   toggleSidebar: () => void;
+  showFloatingButtons: boolean;
+  toggleFloatingButtons: () => void;
+  isChatOpen: boolean;
+  setIsChatOpen: (isOpen: boolean) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -36,4 +40,14 @@ export const useUIStore = create<UIState>((set) => ({
       return { isSidebarCollapsed: newState };
     });
   },
+  showFloatingButtons: localStorage.getItem('showFloatingButtons') !== 'false',
+  toggleFloatingButtons: () => {
+    set((state) => {
+      const newState = !state.showFloatingButtons;
+      localStorage.setItem('showFloatingButtons', String(newState));
+      return { showFloatingButtons: newState };
+    });
+  },
+  isChatOpen: false,
+  setIsChatOpen: (isOpen) => set({ isChatOpen: isOpen }),
 }));

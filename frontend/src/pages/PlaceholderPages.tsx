@@ -1,5 +1,5 @@
 import { useUIStore } from '../store/uiStore';
-import { Users, ShoppingBag, MessageSquare } from 'lucide-react';
+import { Users, ShoppingBag, MessageSquare, Megaphone, Code } from 'lucide-react';
 
 const PlaceholderPage = ({ icon: Icon, titleKey, colorClass }: { icon: any; titleKey: string; colorClass: string }) => {
   const { language } = useUIStore();
@@ -9,12 +9,16 @@ const PlaceholderPage = ({ icon: Icon, titleKey, colorClass }: { icon: any; titl
       community: 'Community',
       trade: 'Used Goods Trading',
       council: 'Student Council Desk',
+      jobPosts: 'Corporate Recruitment',
+      projectRecruitment: 'Project Recruitment',
       comingSoon: 'This feature is coming soon!',
     },
     ko: {
       community: '커뮤니티',
       trade: '중고거래',
       council: '학생회 창구',
+      jobPosts: '기업 구인',
+      projectRecruitment: '프로젝트 구인',
       comingSoon: '이 기능은 곧 출시될 예정입니다!',
     }
   };
@@ -39,6 +43,7 @@ const PlaceholderPage = ({ icon: Icon, titleKey, colorClass }: { icon: any; titl
   );
 };
 
-export const CommunityPage = () => <PlaceholderPage icon={Users} titleKey="community" colorClass="text-purple-500" />;
 export const TradePage = () => <PlaceholderPage icon={ShoppingBag} titleKey="trade" colorClass="text-orange-500" />;
 export const CouncilPage = () => <PlaceholderPage icon={MessageSquare} titleKey="council" colorClass="text-green-500" />;
+export const JobPostsPage = () => <PlaceholderPage icon={Megaphone} titleKey="jobPosts" colorClass="text-rose-500" />;
+export const ProjectRecruitmentPage = () => <PlaceholderPage icon={Code} titleKey="projectRecruitment" colorClass="text-amber-500" />;

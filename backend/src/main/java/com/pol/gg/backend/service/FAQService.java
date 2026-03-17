@@ -16,7 +16,7 @@ public class FAQService {
     private final FAQRepository faqRepository;
 
     public List<FAQ> getAllFaqs() {
-        return faqRepository.findAllByOrderByIdAsc();
+        return faqRepository.findAllByOrderBySortOrderAsc();
     }
 
     @Transactional
